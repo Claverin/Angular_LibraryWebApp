@@ -96,7 +96,7 @@ namespace LibraryWebApp.Migrations
                     b.ToTable("BookAuthor");
                 });
 
-            modelBuilder.Entity("LibraryWebApp.Models.BookTypeOfBook", b =>
+            modelBuilder.Entity("LibraryWebApp.Models.BookGenre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,10 +116,10 @@ namespace LibraryWebApp.Migrations
 
                     b.HasIndex("IdBookType");
 
-                    b.ToTable("BookTypeOfBook");
+                    b.ToTable("BookGenre");
                 });
 
-            modelBuilder.Entity("LibraryWebApp.Models.TypeOfBook", b =>
+            modelBuilder.Entity("LibraryWebApp.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -133,7 +133,7 @@ namespace LibraryWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypeOfBook");
+                    b.ToTable("Genre");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -353,15 +353,15 @@ namespace LibraryWebApp.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("LibraryWebApp.Models.BookTypeOfBook", b =>
+            modelBuilder.Entity("LibraryWebApp.Models.BookGenre", b =>
                 {
                     b.HasOne("LibraryWebApp.Models.Book", "Book")
-                        .WithMany("TypeOfBook")
+                        .WithMany("Genre")
                         .HasForeignKey("IdBook")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LibraryWebApp.Models.TypeOfBook", "TypeOfBook")
+                    b.HasOne("LibraryWebApp.Models.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("IdBookType")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -369,7 +369,7 @@ namespace LibraryWebApp.Migrations
 
                     b.Navigation("Book");
 
-                    b.Navigation("TypeOfBook");
+                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -432,7 +432,7 @@ namespace LibraryWebApp.Migrations
                 {
                     b.Navigation("BookAuthor");
 
-                    b.Navigation("TypeOfBook");
+                    b.Navigation("Genre");
                 });
 #pragma warning restore 612, 618
         }

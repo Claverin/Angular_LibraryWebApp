@@ -79,7 +79,7 @@ namespace LibraryWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TypeOfBook",
+                name: "Genre",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -88,7 +88,7 @@ namespace LibraryWebApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TypeOfBook", x => x.Id);
+                    table.PrimaryKey("PK_Genre", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -224,7 +224,7 @@ namespace LibraryWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookTypeOfBook",
+                name: "BookGenre",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -234,17 +234,17 @@ namespace LibraryWebApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookTypeOfBook", x => x.Id);
+                    table.PrimaryKey("PK_BookGenre", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookTypeOfBook_Book_IdBook",
+                        name: "FK_BookGenre_Book_IdBook",
                         column: x => x.IdBook,
                         principalTable: "Book",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookTypeOfBook_TypeOfBook_IdBookType",
+                        name: "FK_BookGenre_Genre_IdBookType",
                         column: x => x.IdBookType,
-                        principalTable: "TypeOfBook",
+                        principalTable: "Genre",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -299,13 +299,13 @@ namespace LibraryWebApp.Migrations
                 column: "IdBook");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookTypeOfBook_IdBook",
-                table: "BookTypeOfBook",
+                name: "IX_BookGenre_IdBook",
+                table: "BookGenre",
                 column: "IdBook");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookTypeOfBook_IdBookType",
-                table: "BookTypeOfBook",
+                name: "IX_BookGenre_IdBookType",
+                table: "BookGenre",
                 column: "IdBookType");
         }
 
@@ -330,7 +330,7 @@ namespace LibraryWebApp.Migrations
                 name: "BookAuthor");
 
             migrationBuilder.DropTable(
-                name: "BookTypeOfBook");
+                name: "BookGenre");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -345,7 +345,7 @@ namespace LibraryWebApp.Migrations
                 name: "Book");
 
             migrationBuilder.DropTable(
-                name: "TypeOfBook");
+                name: "Genre");
         }
     }
 }

@@ -1,0 +1,27 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Genre</th>
+            <th scope="col">Author</th>
+            <th scope="col">Release date</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Change color bacground -->
+        <tr *ngFor="let book of books; let i = index" 
+        [attr.data-index]="i" [routerLink]="['/book/', book.id]">
+            <th scope="row">{{i+1}}</th>
+            <th>{{book.title}}</th>
+            <th>{{book.genre}}</th>
+            <th>{{book.author}}</th>
+            <th>{{book.releaseDate}}</th>
+            <th>
+                <button click-stop-propagation class="btn btn-info" (click)="editBook($event, book.id)">Edit</button>
+                <button click-stop-propagation class="btn btn-danger" (click)="removeBook($event, book.id)">Delete</button>
+            </th>
+        </tr>
+    </tbody>
+  </table> 

@@ -30,12 +30,12 @@ export class BookEndpointService extends BaseEndpointService
         return this.post(this.url, book)
     }
 
-    update(id: Number): Observable<Book> {
-        return this.update(id)
+    update(book: Book) {
+        this.patch(this.url, book)
     }
 
-    delete(id: Number): Observable<Book>
+    remove(id: Number)
     {
-        return this.delete(id)
+        this.delete(this.url + id)
     }
 }

@@ -4,6 +4,6 @@ export interface Book {
     description: string;
     image: string;
     releaseDate: Date;
-    bookAuthor: string;
-    typeOfBook: string;
+    author: string;
+    genre: string;
 }

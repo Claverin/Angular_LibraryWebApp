@@ -4,11 +4,21 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    redirectTo: 'book'
+  },
+  {
+    path: 'book',
     children: [
       {
         path: '',
         loadChildren: async () =>
-          (await import('./home/home.module')).HomeModule,
+          (await import('./library/library.module')).LibraryModule,
+      }, 
+      {
+        path: ":id",
+        loadChildren: async () =>
+          (await import("./book/book.module")).BookModule,
       }
     ],
   },

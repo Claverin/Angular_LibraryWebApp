@@ -9,8 +9,25 @@ import { Book } from '../model/Book';
 export class BookService {
 
   constructor(private _bookEndpointService: BookEndpointService) { }
-  public getBook(id: Number): Observable<Book>
-  {
+
+  public getBook(id: Number): Observable<Book>{
     return this._bookEndpointService.getOne(id)
   }
+
+  public getAllBooks(): Observable<Book[]> {
+    return this._bookEndpointService.getAll()
+  }
+
+  public addBook(book: Book) {
+    this._bookEndpointService.create(book)
+  }
+
+  public editBook(book: Book) {
+    this._bookEndpointService.update(book)
+  }
+
+  public removeBook(id: number) {
+    this._bookEndpointService.remove(id);
+  }
+
 }

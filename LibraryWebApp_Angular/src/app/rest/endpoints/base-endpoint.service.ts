@@ -18,4 +18,14 @@ export class BaseEndpointService {
   {
     return this.client.post(this.base_url + url, body)
   }
+
+  protected patch(url: string, body: any)
+  {
+    this.client.patch(this.base_url + url, body)
+  }
+
+  protected delete(url: string)
+  {
+    this.client.delete(this.base_url + url)
+  }
 }

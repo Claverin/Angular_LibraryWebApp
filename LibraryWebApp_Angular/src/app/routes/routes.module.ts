@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { RoutingModule } from './routing.module';
 
 
-
 @NgModule({
   declarations: [],
   imports: [CommonModule, RoutingModule],

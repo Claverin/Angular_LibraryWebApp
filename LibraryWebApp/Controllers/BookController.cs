@@ -1,21 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+﻿using LibraryWebApp.Data;
 using LibraryWebApp.Models;
-using LibraryWebApp.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryWebApp.Controllers
 {
     public class BookController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationDbContext _db;
 
-        public BookController(ILogger<HomeController> logger, ApplicationDbContext db)
+        public BookController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
         {
-            _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
             _db = db;
         }
-
+        public IActionResult Index()
+        {
+            return View();
+        }
+        //SEARCH
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
@@ -27,10 +30,35 @@ namespace LibraryWebApp.Controllers
             }
             return item;
         }
-        public IActionResult Index()
+        //POST - CREATE
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Book book)
         {
-            return View();
-        }
+            if (ModelState.IsValid)
+            {
+                IFormFileCollection files = HttpContext.Request.Form.Files;
+                string webRootPath = _webHostEnvironment.WebRootPath;
+                string uploadPath = $"{ webRootPath }{ WC.ImageBookPath }";
+                string extension = Path.GetExtension(files[0].FileName);
 
+                if (extension.ToLower() == ".png" || extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".gif")
+                {
+                    string imageName = $"{ Guid.NewGuid() }{ extension }";
+                    using (var fileStream = new FileStream(Path.Combine(uploadPath, imageName), FileMode.Create))
+                    {
+                        files[0].CopyTo(fileStream);
+                    }
+                    book.Image = imageName;
+
+                    _db.Book.Add(book);
+                    _db.SaveChanges();
+                    return RedirectToAction(nameof(Index));
+                }
+                ModelState.AddModelError("Image", "File has to be an image");
+                return Index();
+            }
+            return Index();
+        }
     }
 }
