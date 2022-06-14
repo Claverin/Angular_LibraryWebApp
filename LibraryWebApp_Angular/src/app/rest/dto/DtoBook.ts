@@ -2,6 +2,6 @@ export interface DtoBook {
     id: number;
     title: string;
     releaseDate: Date;
-    author: string;
-    genre: string;
+    author: string[];
+    genre: string[];
 }
