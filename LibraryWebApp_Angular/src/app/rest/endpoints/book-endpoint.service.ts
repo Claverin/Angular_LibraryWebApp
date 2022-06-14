@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DtoBook } from '../dto/DtoBook';
 import { Book } from '../model/Book';
 import { BaseEndpointService } from './base-endpoint.service';
 
@@ -20,7 +21,7 @@ export class BookEndpointService extends BaseEndpointService
         return this.get(this.url + id)
     }
 
-    getAll(): Observable<Book[]>
+    getAll(): Observable<DtoBook[]>
     {
         return this.get(this.url)
     }

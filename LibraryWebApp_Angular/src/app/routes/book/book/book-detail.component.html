@@ -1,7 +1,7 @@
-<div class="modal-header">
+<div *ngIf="book" class="modal-header">
     <h4 class="modal-title">{{book.title ? book.title : '-'}}</h4>
 </div>
-<div class="modal-body">
+<div *ngIf="book" class="modal-body">
     <h1>Tytu�: {{book.title ? book.title : '-'}}</h1>
     <h2>Opis: {{book.description ? book.description : '-'}}</h2>
     <h2>Gatunek: </h2>

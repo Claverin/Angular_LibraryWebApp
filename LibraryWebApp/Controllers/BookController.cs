@@ -16,6 +16,7 @@ namespace LibraryWebApp.Controllers
             _db = db;
         }
 
+        [Route("id")]
         [HttpGet("{id}")]
         public IActionResult GetBook(int id)
         {

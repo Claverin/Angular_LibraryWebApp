@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class BaseEndpointService {
 
   constructor(protected client: HttpClient) { }
-  base_url = "http://localhost:5135/api/"
+  base_url = "http://localhost:5135/"
 
   protected get(url: string): Observable<any> {
     return this.client.get(this.base_url + url)

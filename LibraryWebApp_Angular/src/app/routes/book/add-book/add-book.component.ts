@@ -19,7 +19,7 @@ export class AddBookComponent implements OnInit {
     title: [''],
     genre: [''],
     author: [''],
-    date: [''],
+    release_date: [''],
     description: [''],
     image: ['']
   });

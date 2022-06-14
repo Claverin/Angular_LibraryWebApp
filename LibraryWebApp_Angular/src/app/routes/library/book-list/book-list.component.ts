@@ -16,11 +16,13 @@ export class BookListComponent implements OnInit {
   constructor(private _bookService: BookService,
               private router: Router){}
   
-  ngOnInit(): void {}
+    ngOnInit(): void {
+        
+    }
 
   public editBook(event: Event, id: number) {
-    event.stopPropagation()
-    this.router.navigate(['book', id, 'edit'])
+      event.stopPropagation()
+      this.router.navigate(['book', id, 'edit'])
   }
 
   public removeBook(event: Event, id: number) {
@@ -28,4 +30,7 @@ export class BookListComponent implements OnInit {
     this.router.navigate(['book', id, 'delete'])
   }
 
+    public showBook(id: number) {
+        this.router.navigate(['book', id])
+    }
 }

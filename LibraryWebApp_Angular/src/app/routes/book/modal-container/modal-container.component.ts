@@ -32,7 +32,7 @@ export class ModalContainerComponent implements OnDestroy {
     }
     route.params.pipe(takeUntil(this.destroy)).subscribe(params => {
         this.currentDialog = this.modalService.open(component, {centered: true});
-        this.currentDialog.componentInstance.photo = params['id']
+        this.currentDialog.componentInstance.bookId = params['id']
         this.currentDialog.result.then((result: any) => {
             router.navigateByUrl('/');
         }, (reason: any)=> {

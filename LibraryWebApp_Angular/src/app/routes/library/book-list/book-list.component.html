@@ -11,12 +11,13 @@
     </thead>
     <tbody>
         <!-- Change color bacground -->
-        <tr *ngFor="let book of books; let i = index" 
-        [attr.data-index]="i" [routerLink]="['/book/', book.id]">
+        <tr *ngFor="let book of books; let i = index"
+            [attr.data-index]="i" (click)="showBook(book.id)">
+            
             <th scope="row">{{i+1}}</th>
             <th>{{book.title}}</th>
             <th>{{book.genre}}</th>
-            <th>{{book.author}}</th>
+            <th>{{book.author?book.author: '-'}}</th>
             <th>{{book.releaseDate}}</th>
             <th>
                 <button click-stop-propagation class="btn btn-info" (click)="editBook($event, book.id)">Edit</button>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DtoBook } from '../dto/DtoBook';
 import { BookEndpointService } from '../endpoints/book-endpoint.service';
 import { Book } from '../model/Book';
 
@@ -14,7 +15,7 @@ export class BookService {
     return this._bookEndpointService.getOne(id)
   }
 
-  public getAllBooks(): Observable<Book[]> {
+  public getAllBooks(): Observable<DtoBook[]> {
     return this._bookEndpointService.getAll()
   }
 
