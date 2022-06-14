@@ -27,6 +27,6 @@ export class BookDetailComponent implements OnInit {
                 title: 'Dziady', author: 'Adam Mickiewicz', 
                 description: 'Ksiazka z epoki romantyzmu', 
                 releaseDate: new Date(1850, 10, 1), genre: 'dramat',
-                image: 'papiez.jpg'}
+                image: 'default.jpg'}
     }
 }
