@@ -13,15 +13,12 @@ export class LibraryComponent implements OnInit {
 
   books: DtoBook[] = [];
 
-  isLoaded = false
-
   constructor(private _bookService: BookService,
     private router: Router){}
   
   ngOnInit(): void {
     this._bookService.getAllBooks().subscribe((data:DtoBook[])=>{
         this.books = data;
-        this.isLoaded = true
     })
   }
 

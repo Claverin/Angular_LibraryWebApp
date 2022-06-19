@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { BookDetailComponent } from '../book/book-detail.component';
+import { BookDetailComponent } from '../book-details/book-detail.component';
 import { AddBookComponent } from '../add-book/add-book.component';
 import { DeleteBookComponent } from '../delete-book/delete-book.component';
 
@@ -34,9 +34,13 @@ export class ModalContainerComponent implements OnDestroy {
         this.currentDialog = this.modalService.open(component, {centered: true});
         this.currentDialog.componentInstance.bookId = params['id']
         this.currentDialog.result.then((result: any) => {
-            router.navigateByUrl('/');
+            router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this.router.navigate(['/']);
+            });
         }, (reason: any)=> {
-            router.navigateByUrl('/');
+            router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this.router.navigate(['/']);
+            });
         });
     });
   }

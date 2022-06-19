@@ -22,4 +22,5 @@ export class BookDetailComponent implements OnInit {
             this.book = data
         })
     }
+
 }

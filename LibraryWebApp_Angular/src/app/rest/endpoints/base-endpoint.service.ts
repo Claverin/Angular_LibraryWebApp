@@ -24,8 +24,8 @@ export class BaseEndpointService {
     this.client.patch(this.base_url + url, body)
   }
 
-  protected delete(url: string)
+  protected delete(url: string): Observable<any>
   {
-    this.client.delete(this.base_url + url)
+      return this.client.delete(this.base_url + url)
   }
 }

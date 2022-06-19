@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LibraryWebApp.Models
 {
@@ -10,6 +11,7 @@ namespace LibraryWebApp.Models
         public string Name { get; set; }
         [Required]
         public string Surname { get; set; }
-        public virtual List<BookAuthor> BookAuthor { get; set; }
+        [JsonIgnore]
+        public IEnumerable<BookAuthor> Books { get; set; }
     }
 }

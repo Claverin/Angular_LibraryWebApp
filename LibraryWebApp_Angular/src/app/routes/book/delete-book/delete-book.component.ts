@@ -14,11 +14,10 @@ export class DeleteBookComponent implements OnInit {
   constructor(private _bookService: BookService,
     private modal: NgbModal) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
-  public deleteBook() {
-      this._bookService.removeBook(this.bookId)
+    public deleteBook() {
+        this._bookService.removeBook(this.bookId).subscribe((it: any) => { /* open modal service #404 */})
       this.modal.dismissAll()
   }
 

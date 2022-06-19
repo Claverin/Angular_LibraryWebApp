@@ -27,8 +27,8 @@ export class BookService {
     this._bookEndpointService.update(book)
   }
 
-  public removeBook(id: number) {
-    this._bookEndpointService.remove(id);
-  }
+    public removeBook(id: number): Observable<any> {
+        return this._bookEndpointService.remove(id);
+    }
 
 }

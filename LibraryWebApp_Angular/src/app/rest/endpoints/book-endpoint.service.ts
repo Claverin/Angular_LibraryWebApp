@@ -35,8 +35,8 @@ export class BookEndpointService extends BaseEndpointService
         this.patch(this.url, book)
     }
 
-    remove(id: Number)
+    remove(id: Number): Observable<any>
     {
-        this.delete(this.url + id)
+        return this.delete(this.url + id)
     }
 }

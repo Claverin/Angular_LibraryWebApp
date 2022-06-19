@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public virtual List<BookAuthor> Authors { get; set; }
-        public virtual List<BookGenre> Genres { get; set; }
+        public virtual IEnumerable<BookAuthor> Authors { get; set; }
+        public virtual IEnumerable<BookGenre> Genres { get; set; }
     }
 }

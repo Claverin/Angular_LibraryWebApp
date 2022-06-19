@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BookDetailComponent } from './book/book-detail.component';
+import { BookDetailComponent } from './book-details/book-detail.component';
 import { BookRoutingModule } from './book-routing.module';
 import { ModalContainerComponent } from './modal-container/modal-container.component';
 import { AddBookComponent } from './add-book/add-book.component';

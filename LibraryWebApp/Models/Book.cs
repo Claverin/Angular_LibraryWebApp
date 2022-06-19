@@ -15,8 +15,9 @@ namespace LibraryWebApp.Models
         [DisplayName("Release Date")]
         public DateTime ReleaseDate { get; set; }
         [DisplayName("Book Authors")]
-        public virtual List<BookAuthor> BookAuthor { get; set; }
+        public IEnumerable<BookAuthor> BookAuthors { get; set; }
         [DisplayName("Book Type")]
-        public virtual List<BookGenre> Genre { get; set; }
+        public IEnumerable<BookGenre> BookGenres { get; set; }
+
     }
 }
