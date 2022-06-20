@@ -1,6 +1,7 @@
 ﻿using LibraryWebApp.Data;
 using LibraryWebApp.Models;
 using LibraryWebApp.Models.DTO;
+using LibraryWebApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,17 +12,22 @@ namespace LibraryWebApp.Controllers
     public class BookController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
+        private readonly IBookService _bookService;
 
-        public BookController(ApplicationDbContext db)
+        public BookController(ApplicationDbContext db, IBookService bookService)
         {
             _db = db;
+            _bookService = bookService;
         }
 
         [Route("id")]
         [HttpGet("{id}")]
         public IActionResult GetBook(int id)
         {
-            var item = _db.Book.Find(id);
+            var item = _db.Book
+                .Include("Authors")
+                .Include("Genres")
+                .FirstOrDefault(s => s.Id == id);
 
             if (item == null)
             {
@@ -33,41 +39,31 @@ namespace LibraryWebApp.Controllers
         [HttpGet]
         public List<BookDto> GetAllBooks()
         {
-            var items = _db.Book
-                .Include("BookGenres")
-                .Include("BookAuthors")
-                .Select(x => new BookDto()
+            return _db.Book
+                .Include("Authors")
+                .Include("Genres").Select(it => new BookDto
                 {
-                    Id = x.Id,
-                    Title = x.Title,
-                    ReleaseDate = x.ReleaseDate,
-                    Authors = x.BookAuthors.ToList(),
-                    Genres = x.BookGenres.ToList()
+                    Id = it.Id,
+                    Title = it.Title,
+                    ReleaseDate = it.ReleaseDate,
+                    Authors = it.Authors.ToList(),
+                    Genres = it.Genres.ToList()
                 }).ToList();
 
-            return items;
         }
 
         [HttpPost]
         public IActionResult AddBook(PostBook book)
         {
-
-            var genreList = book.Genres.Select(x => PostGenre.ToGenre(x)).ToList();
-            var genreIds = saveGenresIfNotExsists(genreList);
-
-            var authorList = book.Authors.Select(x => PostAuthor.ToAuthor(x)).ToList();
-            var authorIds = saveGenresIfNotExsists(authorList);
-
-            var bookList = book.Select(x => PostGenre.ToGenre(x)).ToList();
-            var bookIds = saveGenresIfNotExsists(genreList);
-
+            _bookService.Save(book);
             return Ok();
-            //return CreatedAtAction(nameof(GetAllBooks), book.Id, book);
         }
 
-        [HttpPut]
-        public IActionResult UpdateBook([FromBody] Book book)
+        [Route("id")]
+        [HttpPatch("{id}")]
+        public IActionResult UpdateBook(PatchBook book)
         {
+            Console.WriteLine(book.ToString());
             var existingBook = _db.Book.Find(book.Id);
 
             if (existingBook == null)
@@ -78,8 +74,8 @@ namespace LibraryWebApp.Controllers
             existingBook.Title = book.Title;
             existingBook.Image = book.Image;
             existingBook.ReleaseDate = book.ReleaseDate;
-            existingBook.BookAuthors = book.BookAuthors;
-            existingBook.BookGenres = book.BookGenres;
+            existingBook.Authors = book.Authors;
+            existingBook.Genres = book.Genres;
             _db.SaveChanges();
             return Ok(existingBook);
         }

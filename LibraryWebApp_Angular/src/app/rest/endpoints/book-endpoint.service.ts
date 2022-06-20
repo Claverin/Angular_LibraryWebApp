@@ -32,7 +32,7 @@ export class BookEndpointService extends BaseEndpointService
     }
 
     update(book: Book) {
-        this.patch(this.url, book)
+        this.patch(this.url + book.id, book)
     }
 
     remove(id: Number): Observable<any>

@@ -3,25 +3,36 @@ using LibraryWebApp.Models;
 
 namespace LibraryWebApp.Services
 {
-    public class AuthorService
+    public class AuthorService : IAuthorService
     {
         private readonly ApplicationDbContext _db;
-        public Genre saveGenreIfNotExists(Genre genre)
+        public AuthorService(ApplicationDbContext db)
         {
-            var dbGenre = _db.Genre.FirstOrDefault(g => g.Name == genre.Name);
-            if (dbGenre == null)
+            _db = db;
+        }
+        public Author saveIfNotExist(Author author)
+        {
+            var dbAuthor = _db.Author
+                .FirstOrDefault(g => g.Name == author.Name && g.Surname == author.Surname);
+            if (dbAuthor == null)
             {
-                _db.Genre.Add(genre);
-                _db.SaveChanges();
-                dbGenre = genre;
+                dbAuthor = Save(author);
             }
 
-            return dbGenre;
+            return dbAuthor;
         }
 
-        public IEnumerable<Genre> saveGenresIfNotExsists(IEnumerable<Genre> genres)
+        public IEnumerable<Author> saveIfNotExsists(IEnumerable<Author> authors)
         {
-            return genres.Select(genres => saveGenreIfNotExists(genres));
+            return authors.Select(authors => saveIfNotExist(authors));
+        }
+
+        private Author Save(Author author)
+        {
+            _db.Author.Add(author);
+            _db.SaveChanges();
+            return author;
         }
     }
+
 }

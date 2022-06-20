@@ -21,6 +21,7 @@ export class BaseEndpointService {
 
   protected patch(url: string, body: any)
   {
+      console.log(url)
     this.client.patch(this.base_url + url, body)
   }
 

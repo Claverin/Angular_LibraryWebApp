@@ -12,6 +12,6 @@ namespace LibraryWebApp.Models
         [Required]
         public string Surname { get; set; }
         [JsonIgnore]
-        public IEnumerable<BookAuthor> Books { get; set; }
+        public IEnumerable<Book> Books { get; set; }
     }
 }

@@ -7,7 +7,6 @@ namespace LibraryWebApp.Models.DTO
     public class PostGenre
     {
         public string Name { get; set; }
-        public IEnumerable<BookGenre> Books { get; set; }
 
         public static Genre ToGenre(PostGenre pGenre)
         {

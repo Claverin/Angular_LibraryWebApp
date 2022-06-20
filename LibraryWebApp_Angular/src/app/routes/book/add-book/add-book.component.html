@@ -6,28 +6,42 @@
         <div class="row">
             <div class="col-6">
                 <p>
-                    <input type="text" id="title" name="title" placeholder="Title" formControlName="title">
+                    <input type="text" id="title" name="title" placeholder="Title" formControlName="title" [(ngModel)]="book.title">
                 </p>
-                <p>
-                    <input type="text" id="genre" name="genre" placeholder="Genre*" formControlName="genre">
-                </p>
-                <p>
-                    <input type="text" id="author" name="author" placeholder="Author*" formControlName="author">
-                </p>
+                <div formGroupName="genre">
+                    <span *ngFor="let item of [].constructor(genreCounter); let i = index">
+                        <input type="text" id="genre{{i}}" name="genre{{i}}" formControlName="genre{{i}}" [(ngModel)]="book.genres[i].name"/>
+                    </span>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-success" (click)="addGenre()">Add genre</button>
+                    <button type="button" class="btn btn-danger" (click)="removeGenre()">Del genre</button>
+                </div>
+          
+                <div formGroupName="author">
+                    <span *ngFor="let item of [].constructor(authorCounter); let i = index">
+                        <input type="text" id="name{{i}}" name="name{{i}}" formControlName="name{{i}}" [(ngModel)]="book.authors[i].name"/>
+                        <input type="text" id="surname{{i}}" name="surname{{i}}" formControlName="surname{{i}}" [(ngModel)]="book.authors[i].surname"/>
+                    </span>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-success" (click)="addAuthor()">Add author</button>
+                    <button type="button" class="btn btn-danger" (click)="removeAuthor()">Del author</button>
+                </div>
             </div>
             <div class="col-6">
                 <p>
-                    <input type="date" id="release_date" name="release_date" placeholder="Release Data" formControlName="release_date">
+                    <input type="date" id="release_date" name="release_date" placeholder="Release Data" formControlName="release_date" [(ngModel)]="book.releaseDate">
                 </p>
                 <p>
-                    <input type="textarea" id="description" name="description" placeholder="Description" formControlName="description">
+                    <input type="textarea" id="description" name="description" placeholder="Description" formControlName="description" [(ngModel)]="book.description">
                 </p>
                 <p>
-                    <input type="text" id="image" name="image" placeholder="Image" formControlName="image">
+                    <input type="text" id="image" name="image" placeholder="Image" formControlName="image" [(ngModel)]="book.image">
                 </p>
             </div>
         </div>
         <button type="submit" class="btn btn-success">Submit</button>
-        <button class="btn btn-danger" (click)="abort()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="abort()">Cancel</button>
     </form>
 </div>

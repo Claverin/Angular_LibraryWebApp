@@ -1,27 +1,38 @@
 ﻿using LibraryWebApp.Data;
 using LibraryWebApp.Models;
+using LibraryWebApp.Models.DTO;
 
 namespace LibraryWebApp.Services
 {
-    public class BookService
+    public class BookService : IBookService
     {
         private readonly ApplicationDbContext _db;
-        public Genre saveGenreIfNotExists(Genre genre)
-        {
-            var dbGenre = _db.Genre.FirstOrDefault(g => g.Name == genre.Name);
-            if (dbGenre == null)
-            {
-                _db.Genre.Add(genre);
-                _db.SaveChanges();
-                dbGenre = genre;
-            }
+        private readonly IGenreService _genreService;
+        private readonly IAuthorService _authorService;
 
-            return dbGenre;
+        public BookService(ApplicationDbContext db,
+                           IGenreService genreService,
+                           IAuthorService authorService)
+        {
+            _db = db;
+            _genreService = genreService;
+            _authorService = authorService;
+        }
+        //Maybe change to IActionResult
+        public Book Save(PostBook pBook)
+        {
+            var genreList = pBook.Genres.Select(x => PostGenre.ToGenre(x));
+            genreList = _genreService.saveIfNotExsists(genreList).ToList();
+            var authorList = pBook.Authors.Select(x => PostAuthor.ToAuthor(x));
+            authorList = _authorService.saveIfNotExsists(authorList).ToList();
+            Book book = PostBook.ToBook(pBook);
+            book.Authors = authorList;
+            book.Genres = genreList;
+            _db.Book.Add(book);
+            _db.SaveChanges();
+            return book;
         }
 
-        public IEnumerable<Genre> saveGenresIfNotExsists(IEnumerable<Genre> genres)
-        {
-            return genres.Select(genres => saveGenreIfNotExists(genres));
-        }
+    
     }
 }

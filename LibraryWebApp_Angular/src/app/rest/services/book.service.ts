@@ -19,8 +19,8 @@ export class BookService {
     return this._bookEndpointService.getAll()
   }
 
-  public addBook(book: Book) {
-    this._bookEndpointService.create(book)
+    public addBook(book: Book) {
+        this._bookEndpointService.create(book).subscribe()
   }
 
   public editBook(book: Book) {

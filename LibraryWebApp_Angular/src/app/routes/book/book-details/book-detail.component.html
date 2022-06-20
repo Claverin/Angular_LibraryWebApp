@@ -2,8 +2,16 @@
     <h4 class="modal-title">{{book.title ? book.title : '-'}}</h4>
 </div>
 <div *ngIf="book" class="modal-body">
-    <h1>Tytu�: {{book.title ? book.title : '-'}}</h1>
-    <h2>Opis: {{book.description ? book.description : '-'}}</h2>
-    <h2>Gatunek: </h2>
-    <h3>Autor: </h3>
+    <h1>Title: {{book.title ? book.title : '-'}}</h1>
+    <h2>Description: {{book.description ? book.description : '-'}}</h2>
+    <h2>Genre:
+        <span *ngFor="let genre of book.genres">
+            {{genre.name}} 
+        </span>
+    </h2>
+    <h3>Autor:
+        <span *ngFor="let author of book.authors">
+            {{author.name}} {{author.surname}}
+        </span>
+    </h3>
 </div>

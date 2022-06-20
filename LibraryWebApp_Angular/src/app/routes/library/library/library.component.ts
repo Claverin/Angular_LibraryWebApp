@@ -17,7 +17,8 @@ export class LibraryComponent implements OnInit {
     private router: Router){}
   
   ngOnInit(): void {
-    this._bookService.getAllBooks().subscribe((data:DtoBook[])=>{
+      this._bookService.getAllBooks().subscribe((data: DtoBook[]) => {
+        console.log(data)
         this.books = data;
     })
   }

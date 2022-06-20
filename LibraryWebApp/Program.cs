@@ -1,4 +1,5 @@
 using LibraryWebApp.Data;
+using LibraryWebApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,9 @@ builder.Services.AddCors(options =>
                                 .AllowAnyMethod();
                       });
 });
+builder.Services.AddScoped<IGenreService, GenreService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 
 var app = builder.Build();
