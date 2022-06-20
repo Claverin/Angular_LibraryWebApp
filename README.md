@@ -1,3 +1,3 @@
 # Angular_LibraryWebApp
-Folder LibraryWebApp contains backend side of application
-Folder LibraryWebApp_Angular contains frontend side of application
+Folder <b>LibraryWebApp</b> contains backend side of application <br>
+Folder <b>LibraryWebApp_Angular</b>  contains frontend side of application
