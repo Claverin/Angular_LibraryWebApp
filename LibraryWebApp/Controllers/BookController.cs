@@ -87,7 +87,7 @@ namespace LibraryWebApp.Controllers
             return Ok(existingBook);
         }
 
-        [HttpDelete("{id}")] // ✅ usuń [Route("id")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteBook(int id)
         {
             var existingBook = _db.Book.Find(id);
