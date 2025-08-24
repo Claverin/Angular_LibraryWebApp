@@ -15,5 +15,4 @@ namespace LibraryWebApp.Models.DTO
             return genre;
         }
     }
-    
 }

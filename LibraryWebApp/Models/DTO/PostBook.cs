@@ -5,9 +5,7 @@ namespace LibraryWebApp.Models.DTO
 {
     public class PostBook
     {
-        [Required]
         public string Description { get; set; }
-        [Required]
         public string Title { get; set; }
         public string Image { get; set; }
         [DisplayName("Release Date")]

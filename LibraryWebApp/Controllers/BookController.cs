@@ -4,6 +4,7 @@ using LibraryWebApp.Models.DTO;
 using LibraryWebApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace LibraryWebApp.Controllers
 {
@@ -20,19 +21,15 @@ namespace LibraryWebApp.Controllers
             _bookService = bookService;
         }
 
-        [Route("id")]
         [HttpGet("{id}")]
         public IActionResult GetBook(int id)
         {
             var item = _db.Book
-                .Include("Authors")
-                .Include("Genres")
+                .Include(b => b.Authors)
+                .Include(b => b.Genres)
                 .FirstOrDefault(s => s.Id == id);
 
-            if (item == null)
-            {
-                return NotFound();
-            }
+            if (item == null) return NotFound();
             return Ok(item);
         }
 
@@ -40,16 +37,17 @@ namespace LibraryWebApp.Controllers
         public List<BookDto> GetAllBooks()
         {
             return _db.Book
-                .Include("Authors")
-                .Include("Genres").Select(it => new BookDto
+                .Include(b => b.Authors)
+                .Include(b => b.Genres)
+                .Select(it => new BookDto
                 {
                     Id = it.Id,
                     Title = it.Title,
                     ReleaseDate = it.ReleaseDate,
                     Authors = it.Authors.ToList(),
                     Genres = it.Genres.ToList()
-                }).ToList();
-
+                })
+                .ToList();
         }
 
         [HttpPost]
@@ -59,37 +57,42 @@ namespace LibraryWebApp.Controllers
             return Ok();
         }
 
-        [Route("id")]
         [HttpPatch("{id}")]
-        public IActionResult UpdateBook(PatchBook book)
+        public IActionResult UpdateBook(int id, [FromBody] PatchBook book)
         {
-            Console.WriteLine(book.ToString());
-            var existingBook = _db.Book.Find(book.Id);
+            var existingBook = _db.Book
+                .Include(b => b.Authors)
+                .Include(b => b.Genres)
+                .FirstOrDefault(b => b.Id == id);
 
-            if (existingBook == null)
-            {
-                return NotFound();
-            }
+            if (existingBook == null) return NotFound();
+
             existingBook.Description = book.Description;
             existingBook.Title = book.Title;
             existingBook.Image = book.Image;
             existingBook.ReleaseDate = book.ReleaseDate;
-            existingBook.Authors = book.Authors;
-            existingBook.Genres = book.Genres;
+
+            var authorIds = book.Authors?.Select(a => a.Id).ToList() ?? new List<int>();
+            var genreIds = book.Genres?.Select(g => g.Id).ToList() ?? new List<int>();
+
+            existingBook.Authors = _db.Author
+                .Where(a => authorIds.Contains(a.Id))
+                .ToList();
+
+            existingBook.Genres = _db.Genre
+                .Where(g => genreIds.Contains(g.Id))
+                .ToList();
+
             _db.SaveChanges();
             return Ok(existingBook);
         }
 
-        [Route("id")]
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // ✅ usuń [Route("id")]
         public IActionResult DeleteBook(int id)
         {
             var existingBook = _db.Book.Find(id);
+            if (existingBook == null) return NotFound();
 
-            if (existingBook == null)
-            {
-                return NotFound();
-            }
             _db.Book.Remove(existingBook);
             _db.SaveChanges();
             return Ok(existingBook);

@@ -6,11 +6,8 @@ namespace LibraryWebApp.Models
 {
     public class Genre
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
         public string Name { get; set; }
-
         [JsonIgnore]
         public virtual IEnumerable<Book> Books { get; set; }
 

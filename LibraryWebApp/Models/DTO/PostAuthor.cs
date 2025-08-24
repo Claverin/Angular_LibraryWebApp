@@ -5,7 +5,7 @@ namespace LibraryWebApp.Models.DTO
 {
     public class PostAuthor
     {
-        [Required]
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public static Author ToAuthor(PostAuthor pAuthor)
