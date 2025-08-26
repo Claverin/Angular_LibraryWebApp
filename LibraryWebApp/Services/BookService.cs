@@ -26,13 +26,11 @@ namespace LibraryWebApp.Services
             var authorList = pBook.Authors.Select(x => PostAuthor.ToAuthor(x));
             authorList = _authorService.saveIfNotExsists(authorList).ToList();
             Book book = PostBook.ToBook(pBook);
-            book.Authors = authorList;
-            book.Genres = genreList;
+            //book.Authors = authorList;
+            //book.Genres = genreList;
             _db.Book.Add(book);
             _db.SaveChanges();
             return book;
         }
-
-    
     }
 }

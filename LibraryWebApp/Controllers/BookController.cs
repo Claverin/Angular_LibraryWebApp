@@ -9,7 +9,7 @@ using System.Linq;
 namespace LibraryWebApp.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/books")]
     public class BookController : ControllerBase
     {
         private readonly ApplicationDbContext _db;

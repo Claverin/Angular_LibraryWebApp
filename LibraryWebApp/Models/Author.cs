@@ -6,9 +6,14 @@ namespace LibraryWebApp.Models
     public class Author
     {
         public int Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
+
+        [Required]
         public string Surname { get; set; }
+
         [JsonIgnore]
-        public IEnumerable<Book> Books { get; set; }
+        public ICollection<Book> Books { get; set; }
     }
 }

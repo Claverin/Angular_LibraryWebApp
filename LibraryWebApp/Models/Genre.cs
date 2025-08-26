@@ -7,9 +7,12 @@ namespace LibraryWebApp.Models
     public class Genre
     {
         public int Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
+
         [JsonIgnore]
-        public virtual IEnumerable<Book> Books { get; set; }
+        public ICollection<Book> Books { get; set; }
 
     }
 }
