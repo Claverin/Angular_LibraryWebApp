@@ -1,5 +1,6 @@
 using LibraryWebApp.Data;
 using LibraryWebApp.Services;
+using LibraryWebApp.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -9,6 +10,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -19,10 +25,6 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
-
-builder.Services.AddScoped<IGenreService, GenreService>();
-builder.Services.AddScoped<IAuthorService, AuthorService>();
-builder.Services.AddScoped<IBookService, BookService>();
 
 var app = builder.Build();
 
