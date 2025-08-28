@@ -1,26 +1,27 @@
-import { HttpClient } from "@angular/common/http";
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
+import { BookApiService, BookResponse } from './rest/book-api.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styles: [],
+    selector: 'app-root',
+    templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  private http = inject(HttpClient);
-  title = "Library Web App";
+    books: BookResponse[] = [];
+    loading = false;
+    error = '';
 
-  ngOnInit(): void {
-    this.http.get("https://localhost:5001/api/members").subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (error) => {
-        console.log(error);
-      },
-      complete: () => {
-        console.log("Request completed");
-      },
-    });
-  }
+    constructor(private api: BookApiService) { }
+
+    ngOnInit() {
+        this.load();
+    }
+
+    load() {
+        this.loading = true;
+        this.error = '';
+        this.api.getAll().subscribe({
+            next: (res) => { this.books = res; this.loading = false; },
+            error: (err) => { this.error = 'Cannot load books.'; console.error(err); this.loading = false; }
+        });
+    }
 }

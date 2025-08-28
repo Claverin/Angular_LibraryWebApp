@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: library_sql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Your_strong_Password123"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools/bin/sqlcmd",
+          "-S",
+          "localhost",
+          "-U",
+          "sa",
+          "-P",
+          "Your_strong_Password123",
+          "-Q",
+          "SELECT 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  api:
+    build:
+      context: .
+      dockerfile: ./LibraryWebApp/Dockerfile
+    container_name: library_api
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__DefaultConnection: "Server=db;Database=Library;User Id=sa;Password=Your_strong_Password123;TrustServerCertificate=True;MultipleActiveResultSets=True"
+    ports:
+      - "8080:8080"
+
+  web:
+    build:
+      context: ./LibraryWebApp_Angular
+    container_name: library_web
+    depends_on:
+      - api
+    ports:
+      - "8081:80"
+
+volumes:
+  mssql_data:

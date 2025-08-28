@@ -1,5 +1,39 @@
-<app-header>{{title}}</app-header>
-<div class="container">
-    <router-outlet></router-outlet>
+<div class="container p-4">
+  <h1 class="mb-3">Books</h1>
+
+  <button class="btn btn-primary mb-3" (click)="load()">Reload</button>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <ul class="list-group" *ngIf="books?.length">
+    <li class="list-group-item" *ngFor="let b of books">
+      <div class="fw-bold">{{ b.title }}</div>
+      <div class="text-muted">{{ b.releaseDate | date }}</div>
+
+      <div>
+        Authors:
+        <ng-container *ngIf="b.authors?.length; else noAuthors">
+          <ng-container *ngFor="let a of b.authors; let last = last">
+            {{ a.name }} {{ a.surname }}<span *ngIf="!last">, </span>
+          </ng-container>
+        </ng-container>
+        <ng-template #noAuthors>-</ng-template>
+      </div>
+
+      <div>
+        Genres:
+        <ng-container *ngIf="b.genres?.length; else noGenres">
+          <ng-container *ngFor="let g of b.genres; let last = last">
+            {{ g.name }}<span *ngIf="!last">, </span>
+          </ng-container>
+        </ng-container>
+        <ng-template #noGenres>-</ng-template>
+      </div>
+    </li>
+  </ul>
+
+  <div *ngIf="!loading && books && books.length === 0" class="text-muted">
+    No books yet.
+  </div>
 </div>
-<app-footer></app-footer>
