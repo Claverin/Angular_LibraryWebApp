@@ -19,17 +19,22 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 
 const string CorsPolicy = "FrontendCors";
-builder.Services.AddCors(o =>
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? Array.Empty<string>();
+
+builder.Services.AddCors(options =>
 {
-    o.AddPolicy(CorsPolicy, p => p
-        .WithOrigins(
-            "http://localhost:8081",
-            "http://localhost:4200",
-            "http://127.0.0.1:4200"
-        )
-        .AllowAnyHeader()
-        .AllowAnyMethod());
-      //.AllowCredentials() 
+    options.AddPolicy(CorsPolicy, policy =>
+    {
+        if (allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins!)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+                  //.AllowCredentials() 
+        }
+    });
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -41,9 +46,15 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 app.UseCors(CorsPolicy);
-app.UseSwagger();
-app.UseSwaggerUI();
 app.UseAuthorization();
+
 app.MapControllers();
-app.MapGet("/healthz", () => Results.Ok(new { status = "ok" }));
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.MapGet("/healthz", () => Results.Ok(new { status = "ok" }));
+}
+
 app.Run();

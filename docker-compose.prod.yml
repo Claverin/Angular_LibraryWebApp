@@ -1,0 +1,26 @@
+name: libprod
+services:
+  db:
+    container_name: library_sql
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+    volumes:
+      - mssql_data_prod:/var/opt/mssql
+    ports:
+      - "1434:1433"
+  api:
+    container_name: library_api
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__DefaultConnection: "Server=db;Database=Library;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=True"
+    ports:
+      - "4040:8080"
+  web:
+    container_name: library_web
+    depends_on:
+      - api
+    ports:
+      - "4041:80"
+
+volumes:
+  mssql_data_prod:
