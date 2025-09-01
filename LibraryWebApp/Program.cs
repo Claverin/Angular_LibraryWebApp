@@ -47,11 +47,11 @@ var app = builder.Build();
 
 app.UseCors(CorsPolicy);
 app.UseAuthorization();
-
 app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
+    DbSeeder.Seed(app.Services);
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapGet("/healthz", () => Results.Ok(new { status = "ok" }));
