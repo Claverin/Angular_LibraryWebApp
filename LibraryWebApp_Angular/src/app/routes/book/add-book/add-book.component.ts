@@ -1,127 +1,173 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Book } from 'src/app/rest/model/Book';
-import { BookService } from 'src/app/rest/services/book.service';
-import { DtoBook } from '../../../rest/dto/DtoBook';
-import { Author } from '../../../rest/model/Author';
-import { Genre } from '../../../rest/model/Genre';
+import { Component, Input, OnInit } from "@angular/core";
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { Router } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+
+import { BookService } from "src/app/rest/services/book.service";
+import { DtoBook } from "src/app/rest/dto/DtoBook";
+import { Author } from "src/app/rest/model/Author";
+import { Genre } from "src/app/rest/model/Genre";
+import { Book } from "src/app/rest/model/Book";
 
 @Component({
-  selector: 'app-add-book',
-  templateUrl: './add-book.component.html',
-  styles: [
-  ]
+  selector: "app-add-book",
+  templateUrl: "./add-book.component.html",
 })
 export class AddBookComponent implements OnInit {
+  @Input() bookId: number | null = null;
 
-  @Input()
-  bookId: number | null = null
-
-
-  book: Book = {} as Book
-  authorCounter = 1
-  genreCounter = 1
-  bookForm = this.fb.group({
-    title: [''],
-    genre: this.fb.group({
-        genre0: [''],
-    }),
-    author: this.fb.group({
-        name0: [''],
-        surname0: [''],
-    }),
-    release_date: [''],
-    description: [''],
-    image: ['']
+  form: FormGroup = this.fb.group({
+    title: ["", [Validators.required, Validators.maxLength(200)]],
+    description: [""],
+    image: [""],
+    // <input type="date"> zwraca YYYY-MM-DD jako string — backend zwykle akceptuje to wprost
+    releaseDate: ["", Validators.required],
+    authors: this.fb.array([this.authorGroup()]),
+    genres: this.fb.array([this.genreGroup()]),
   });
 
-  constructor(private _bookService: BookService,
-              private fb: FormBuilder,
-      private _modal: NgbModal) {
-      this.book.title = ''
-      this.book.authors = [{ id: -1, name: '', surname: '' }]
-      this.book.description = ''
-      this.book.image = ''
-      this.book.releaseDate = new Date()
-      this.book.genres = [{ id: -1, name: '' }]
+  get authors(): FormArray {
+    return this.form.get("authors") as FormArray;
+  }
+  get genres(): FormArray {
+    return this.form.get("genres") as FormArray;
   }
 
-    ngOnInit(): void {
-   
-      if (this.bookId) {
-          this._bookService.getBook(this.bookId!).subscribe((data: Book) => {
-              this.book = data;
-              this.bookForm.controls['title'].setValue(data.title);
+  constructor(
+    private fb: FormBuilder,
+    private bookService: BookService,
+    private modal: NgbModal,
+    private router: Router
+  ) {}
 
-              this.bookForm.controls['release_date'].setValue(data.releaseDate.toString())
-              this.bookForm.controls['description'].setValue(data.description)
-              this.bookForm.controls['image'].setValue(data.image)
-              this.genreCounter = this.book.genres.length
-              this.authorCounter = this.book.authors.length
-              let author = (this.bookForm.get('author')) as FormGroup
-              data.authors.forEach((it, index) => {
-                  author.addControl("name" + index, new FormControl(it.name))
-                  author.addControl("surname" + index, new FormControl(it.surname))
-              })
-              let genre = (this.bookForm.get('genre')) as FormGroup
-              data.genres.forEach((it, index) => {
-                  genre.addControl("genre" + index, new FormControl(it.name))
-              })
-          })
-      }
+  ngOnInit(): void {
+    if (this.bookId != null) {
+      this.loadForEdit(this.bookId);
+    }
   }
 
-    public onSubmit(): void {
-        if (this.bookId == null) {
-            this._bookService.addBook(this.book)
-        } else {
-            this._bookService.editBook(this.book)
-        }
-        this._modal.dismissAll()
+  // ------ helpers ------
+
+  private authorGroup(): FormGroup {
+    return this.fb.group({
+      name: ["", Validators.required],
+      surname: ["", Validators.required],
+    });
   }
 
-  public abort(): void {
-    this._modal.dismissAll()
+  private genreGroup(): FormGroup {
+    return this.fb.group({
+      name: ["", Validators.required],
+    });
   }
 
-    public addAuthor() {
-        let author = (this.bookForm.get('author')) as FormGroup
-        author.addControl("name" + this.authorCounter, new FormControl())
-        author.addControl("surname" + this.authorCounter, new FormControl())
- 
-        this.book.authors.push({
-            id: -1,
-            name: '',
-            surname: ''
-        })
-        this.authorCounter += 1
-    }
-    public removeAuthor() {
-        let author = (this.bookForm.get('author')) as FormGroup
-        if (this.authorCounter != 1) {
-            this.authorCounter -= 1
-            author.removeControl("name" + this.authorCounter)
-            author.removeControl("surname" + this.authorCounter)
-            this.book.authors.pop()
-        }
-    }
-    public addGenre() {
-        let genre = (this.bookForm.get('genre')) as FormGroup
-        genre.addControl("genre" + this.genreCounter, new FormControl())
-        this.book.genres.push({
-            id: -1,
-            name: ''
-        })
-        this.genreCounter += 1
-    }
-    public removeGenre() {
-        let author = (this.bookForm.get('genre')) as FormGroup
-        if (this.genreCounter != 1) {
-            this.genreCounter -= 1
-            author.removeControl("genre" + this.genreCounter)
-            this.book.genres.pop()
-        }
+  addAuthor(): void {
+    this.authors.push(this.authorGroup());
+  }
+  removeAuthor(): void {
+    if (this.authors.length > 1) this.authors.removeAt(this.authors.length - 1);
+  }
+
+  addGenre(): void {
+    this.genres.push(this.genreGroup());
+  }
+  removeGenre(): void {
+    if (this.genres.length > 1) this.genres.removeAt(this.genres.length - 1);
+  }
+
+  private loadForEdit(id: number): void {
+    this.bookService.getBook(id).subscribe((b: Book) => {
+      // wyczyść istniejące wiersze i ustaw wg danych
+      this.setArray(
+        this.authors,
+        b.authors.map((a) =>
+          this.fb.group({ name: [a.name], surname: [a.surname] })
+        )
+      );
+      this.setArray(
+        this.genres,
+        b.genres.map((g) => this.fb.group({ name: [g.name] }))
+      );
+
+      this.form.patchValue({
+        title: b.title,
+        description: b.description,
+        image: b.image,
+        // zamień Date -> YYYY-MM-DD (jeśli backend zwrócił Date)
+        releaseDate: this.asDateInputValue(b.releaseDate),
+      });
+    });
+  }
+
+  private setArray(arr: FormArray, groups: FormGroup[]): void {
+    while (arr.length) arr.removeAt(0);
+    groups.forEach((g) => arr.push(g));
+    if (arr.length === 0) arr.push(this.fb.group({})); // asekuracyjnie
+  }
+
+  private asDateInputValue(d: any): string {
+    // akceptuje Date lub string ISO; zwraca 'YYYY-MM-DD'
+    const date = d instanceof Date ? d : new Date(d);
+    const y = date.getFullYear();
+    const m = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  // mapowanie formularza -> DtoBook do API
+  private toDto(): DtoBook {
+    const v = this.form.value as any;
+    const authors: Author[] = (v.authors || []).map(
+      (a: any) => ({ name: a.name, surname: a.surname } as Author)
+    );
+    const genres: Genre[] = (v.genres || []).map(
+      (g: any) => ({ name: g.name } as Genre)
+    );
+    const dto: DtoBook = {
+      title: v.title,
+      description: v.description || undefined,
+      image: v.image || undefined,
+      releaseDate: v.releaseDate, // 'YYYY-MM-DD'
+      authors,
+      genres,
+    };
+    return dto;
+  }
+
+  // ------ submit / cancel ------
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
 
+    const payload = this.toDto();
+    const req$ =
+      this.bookId == null
+        ? this.bookService.addBook(payload)
+        : this.bookService.editBook({ id: this.bookId, ...payload } as any);
+
+    req$.subscribe({
+      next: () => {
+        this.modal.dismissAll();
+        // jeśli masz listę pod /book – wróć/odśwież
+        this.router.navigate(["/book"]);
+      },
+      error: (e) => {
+        console.error(e);
+        // tu można pokazać komunikat użytkownikowi
+      },
+    });
+  }
+
+  abort(): void {
+    this.modal.dismissAll();
+  }
 }
