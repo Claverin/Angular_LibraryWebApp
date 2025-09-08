@@ -26,7 +26,6 @@ export class AddBookComponent implements OnInit {
     title: ["", [Validators.required, Validators.maxLength(200)]],
     description: [""],
     image: [""],
-    // <input type="date"> zwraca YYYY-MM-DD jako string — backend zwykle akceptuje to wprost
     releaseDate: ["", Validators.required],
     authors: this.fb.array([this.authorGroup()]),
     genres: this.fb.array([this.genreGroup()]),
@@ -51,8 +50,6 @@ export class AddBookComponent implements OnInit {
       this.loadForEdit(this.bookId);
     }
   }
-
-  // ------ helpers ------
 
   private authorGroup(): FormGroup {
     return this.fb.group({
@@ -83,7 +80,6 @@ export class AddBookComponent implements OnInit {
 
   private loadForEdit(id: number): void {
     this.bookService.getBook(id).subscribe((b: Book) => {
-      // wyczyść istniejące wiersze i ustaw wg danych
       this.setArray(
         this.authors,
         b.authors.map((a) =>
@@ -99,7 +95,6 @@ export class AddBookComponent implements OnInit {
         title: b.title,
         description: b.description,
         image: b.image,
-        // zamień Date -> YYYY-MM-DD (jeśli backend zwrócił Date)
         releaseDate: this.asDateInputValue(b.releaseDate),
       });
     });
@@ -108,11 +103,10 @@ export class AddBookComponent implements OnInit {
   private setArray(arr: FormArray, groups: FormGroup[]): void {
     while (arr.length) arr.removeAt(0);
     groups.forEach((g) => arr.push(g));
-    if (arr.length === 0) arr.push(this.fb.group({})); // asekuracyjnie
+    if (arr.length === 0) arr.push(this.fb.group({}));
   }
 
   private asDateInputValue(d: any): string {
-    // akceptuje Date lub string ISO; zwraca 'YYYY-MM-DD'
     const date = d instanceof Date ? d : new Date(d);
     const y = date.getFullYear();
     const m = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -120,7 +114,6 @@ export class AddBookComponent implements OnInit {
     return `${y}-${m}-${day}`;
   }
 
-  // mapowanie formularza -> DtoBook do API
   private toDto(): DtoBook {
     const v = this.form.value as any;
     const authors: Author[] = (v.authors || []).map(
@@ -133,14 +126,12 @@ export class AddBookComponent implements OnInit {
       title: v.title,
       description: v.description || undefined,
       image: v.image || undefined,
-      releaseDate: v.releaseDate, // 'YYYY-MM-DD'
+      releaseDate: v.releaseDate,
       authors,
       genres,
     };
     return dto;
   }
-
-  // ------ submit / cancel ------
 
   onSubmit(): void {
     if (this.form.invalid) {
@@ -149,20 +140,19 @@ export class AddBookComponent implements OnInit {
     }
 
     const payload = this.toDto();
+
     const req$ =
       this.bookId == null
         ? this.bookService.addBook(payload)
-        : this.bookService.editBook({ id: this.bookId, ...payload } as any);
+        : this.bookService.editBook(this.bookId, payload);
 
     req$.subscribe({
       next: () => {
         this.modal.dismissAll();
-        // jeśli masz listę pod /book – wróć/odśwież
         this.router.navigate(["/book"]);
       },
-      error: (e) => {
+      error: (e: any) => {
         console.error(e);
-        // tu można pokazać komunikat użytkownikowi
       },
     });
   }

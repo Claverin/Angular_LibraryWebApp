@@ -1,32 +1,34 @@
 import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { DtoBook } from "../dto/DtoBook";
-import { BookEndpointService } from "../endpoints/book-endpoint.service";
+
+import { environment } from "../../../environments/environment";
 import { Book } from "../model/Book";
+import { DtoBook } from "../dto/DtoBook";
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable({ providedIn: "root" })
 export class BookService {
-  constructor(private _bookEndpointService: BookEndpointService) {}
+  private readonly apiUrl = environment.apiBaseUrl;
 
-  public getBook(id: Number): Observable<Book> {
-    return this._bookEndpointService.getOne(id);
+  constructor(private http: HttpClient) {}
+
+  getBooks(): Observable<Book[]> {
+    return this.http.get<Book[]>(`${this.apiUrl}/books`);
   }
 
-  public getAllBooks(): Observable<DtoBook[]> {
-    return this._bookEndpointService.getAll();
+  getBook(id: number): Observable<Book> {
+    return this.http.get<Book>(`${this.apiUrl}/books/${id}`);
   }
 
-  public addBook(book: Book) {
-    this._bookEndpointService.create(book).subscribe();
+  addBook(dto: DtoBook): Observable<Book> {
+    return this.http.post<Book>(`${this.apiUrl}/books`, dto);
   }
 
-  public editBook(book: Book) {
-    this._bookEndpointService.update(book);
+  editBook(id: number, dto: DtoBook): Observable<Book> {
+    return this.http.patch<Book>(`${this.apiUrl}/books/${id}`, dto);
   }
 
-  public removeBook(id: number): Observable<any> {
-    return this._bookEndpointService.remove(id);
+  removeBook(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/books/${id}`);
   }
 }
